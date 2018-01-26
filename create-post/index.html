@@ -1,0 +1,36 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<style>
+textarea {width: 100%}
+.submit { text-align: right; }
+</style>
+<div>
+  <div class="input">
+    <textarea id="text"></textarea>
+  </div>
+
+  <div class='input submit'>
+    <button id='create-post'>Create Post</button>
+  </div>  
+</div>
+
+<div id="msg">
+</div>
+
+<div id="posts">
+</div>
+    <script>
+    var onCreateSuccess = function(data){
+      var url = data.url;
+      var html = "<a target='_top' href='"+ url +"'>click here to see the created post</a>";
+      $("#msg").html(html);
+      $("#text").val("");
+    }
+    
+    $(document).ready(function(){
+      $("#create-post").click(function(){
+        const text = $('#text').val();
+        google.script.run.withSuccessHandler(onCreateSuccess).createPost(text);
+      });
+    })
+    
+    </script>
