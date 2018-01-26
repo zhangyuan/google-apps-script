@@ -19,3 +19,12 @@ function createPost(text) {
   post = PlusDomains.Activities.insert(post, userId);
   return post;
 }
+
+function getPosts() {
+  var userId = 'me';
+  var pageToken, posts;
+  return PlusDomains.Activities.list(userId, 'user', {
+    maxResults: 100,
+    pageToken: pageToken
+  });
+}

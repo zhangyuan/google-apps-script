@@ -1,7 +1,19 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+<script id="template-post" type="x-tmpl-mustache">
+<h2>Recent posts</h2>
+{{#posts}}
+<div class="post">
+<a href="{{url}}" target='_top'>{{title}}</a>
+</div>
+{{/posts}}
+</script>
+
 <style>
 textarea {width: 100%}
 .submit { text-align: right; }
+a, a:visited {text-decoration: none; color: #1976D2}
+a:hover {text-decoration: underline }
 </style>
 <div>
   <div class="input">
@@ -16,7 +28,7 @@ textarea {width: 100%}
 <div id="msg">
 </div>
 
-<div id="posts">
+<div id="recent-posts">
 </div>
     <script>
     var onCreateSuccess = function(data){
@@ -26,11 +38,28 @@ textarea {width: 100%}
       $("#text").val("");
     }
     
+    var onGetSuccess = function(data) {
+      var posts = data.items;
+      
+      htmlElements = [];
+      var template = $('#template-post').html();
+      Mustache.parse(template);
+      var rendered = Mustache.render(template, {posts: posts});
+      $("#recent-posts").html(rendered);
+    }
+    
+    var fetchRecentPosts = function(){
+      google.script.run.withSuccessHandler(onGetSuccess).getPosts();
+    }
+    
     $(document).ready(function(){
       $("#create-post").click(function(){
         const text = $('#text').val();
         google.script.run.withSuccessHandler(onCreateSuccess).createPost(text);
+        setTimeout(fetchRecentPosts, 2000);
       });
+      
+      fetchRecentPosts();
     })
     
     </script>
